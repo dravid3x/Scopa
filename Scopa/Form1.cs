@@ -19,7 +19,20 @@ namespace Scopa
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            
+            Mazzo mazzo = new Mazzo();
+            mazzo.riempiMazzo();
+            for (int i = 0; i < 40; i++)
+            {
+                Carta temp = mazzo.prossimaCarta();
+                Console.WriteLine(temp.NCarta + " - " + temp.NSeme);
+            }
+
+            mazzo.mescolaMazzo();
+            for (int i = 0; i < 40; i++)
+            {
+                Carta temp = mazzo.prossimaCarta();
+                Console.WriteLine(temp.NCarta + " - " + temp.NSeme);
+            }
         }
     }
 }
