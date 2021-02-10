@@ -1,0 +1,20 @@
+C:\Users\4BITI.frova\Desktop\Scopa\Scopa\bin\Debug\Scopa.exe.config
+C:\Users\4BITI.frova\Desktop\Scopa\Scopa\bin\Debug\Scopa.exe
+C:\Users\4BITI.frova\Desktop\Scopa\Scopa\bin\Debug\Scopa.pdb
+C:\Users\4BITI.frova\Desktop\Scopa\Scopa\obj\Debug\Scopa.csprojAssemblyReference.cache
+C:\Users\4BITI.frova\Desktop\Scopa\Scopa\obj\Debug\Scopa.Form1.resources
+C:\Users\4BITI.frova\Desktop\Scopa\Scopa\obj\Debug\Scopa.Properties.Resources.resources
+C:\Users\4BITI.frova\Desktop\Scopa\Scopa\obj\Debug\Scopa.csproj.GenerateResource.cache
+C:\Users\4BITI.frova\Desktop\Scopa\Scopa\obj\Debug\Scopa.csproj.CoreCompileInputs.cache
+C:\Users\4BITI.frova\Desktop\Scopa\Scopa\obj\Debug\Scopa.exe
+C:\Users\4BITI.frova\Desktop\Scopa\Scopa\obj\Debug\Scopa.pdb
+C:\Users\dadol\OneDrive\Scuola\Informatica\Codifica Algoritmi\VisualStudio\C#\Scopa\Scopa\bin\Debug\Scopa.exe.config
+C:\Users\dadol\OneDrive\Scuola\Informatica\Codifica Algoritmi\VisualStudio\C#\Scopa\Scopa\bin\Debug\Scopa.exe
+C:\Users\dadol\OneDrive\Scuola\Informatica\Codifica Algoritmi\VisualStudio\C#\Scopa\Scopa\bin\Debug\Scopa.pdb
+C:\Users\dadol\OneDrive\Scuola\Informatica\Codifica Algoritmi\VisualStudio\C#\Scopa\Scopa\obj\Debug\Scopa.csprojAssemblyReference.cache
+C:\Users\dadol\OneDrive\Scuola\Informatica\Codifica Algoritmi\VisualStudio\C#\Scopa\Scopa\obj\Debug\Scopa.Form1.resources
+C:\Users\dadol\OneDrive\Scuola\Informatica\Codifica Algoritmi\VisualStudio\C#\Scopa\Scopa\obj\Debug\Scopa.Properties.Resources.resources
+C:\Users\dadol\OneDrive\Scuola\Informatica\Codifica Algoritmi\VisualStudio\C#\Scopa\Scopa\obj\Debug\Scopa.csproj.GenerateResource.cache
+C:\Users\dadol\OneDrive\Scuola\Informatica\Codifica Algoritmi\VisualStudio\C#\Scopa\Scopa\obj\Debug\Scopa.csproj.CoreCompileInputs.cache
+C:\Users\dadol\OneDrive\Scuola\Informatica\Codifica Algoritmi\VisualStudio\C#\Scopa\Scopa\obj\Debug\Scopa.exe
+C:\Users\dadol\OneDrive\Scuola\Informatica\Codifica Algoritmi\VisualStudio\C#\Scopa\Scopa\obj\Debug\Scopa.pdb
