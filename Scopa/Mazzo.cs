@@ -13,13 +13,7 @@ namespace Scopa
         private Carta[] mazzo = new Carta[dimMazzo];
 
 
-
-
-
-
-
-
-        public void riempiMazzo()
+        public void RiempiMazzo()
         {
             int pos = 0;
             for(int x = 1; x <= 4; x++)
@@ -30,7 +24,7 @@ namespace Scopa
                 }
             }
         }
-        public void mescolaMazzo()
+        public void MescolaMazzo()
         {
             Random rand = new Random();
             for(int i = 0; i < dimMazzo; i++)
@@ -44,8 +38,9 @@ namespace Scopa
 
         public Carta carta { get { return mazzo[pos]; } }
 
-        public Carta prossimaCarta()
+        public Carta ProssimaCarta()
         {
+            //Funzione che restituisce la carta nella posizione attuale e aumenta l'indice
             if (pos == dimMazzo) pos = 0;
             return mazzo[pos++];
         }
