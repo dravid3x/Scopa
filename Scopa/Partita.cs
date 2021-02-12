@@ -31,11 +31,6 @@ namespace Scopa
             }
         }
 
-        public Carta LeggiMazzo(int nPlayer, int posDeck)
-        {
-            return mazziGiocatori[nPlayer].deck[posDeck];
-        }
-
         #region Giocatore
         public void AggiungiCartaGiocatore(int nGiocatore, Carta carta)
         {
