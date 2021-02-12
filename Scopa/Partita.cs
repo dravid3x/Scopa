@@ -8,8 +8,11 @@ namespace Scopa
 {
     public partial class Partita
     {
+        private struct PunteggioRound { public int pGiocatore0; public int pGiocatore1; }
         private const int nCarteDefaultGiocatore = 3;
+        private List<PunteggioRound> punteggi = new List<PunteggioRound>();
         private List<Mazzetto> mazziGiocatori = new List<Mazzetto>();
+        private List<Mazzetto> preseGiocatori = new List<Mazzetto>();
         private Mazzetto banco = new Mazzetto(0);
         private Mazzo mazzoPrincipale = new Mazzo();
         private int nGiocatori;
@@ -19,15 +22,13 @@ namespace Scopa
             mazzoPrincipale.RiempiMazzo();
             mazzoPrincipale.MescolaMazzo();
             nGiocatori = numGiocatori;
-            for (int i = 1; i <= nGiocatori; i++)
+            for (int i = 0; i < nGiocatori; i++)
             {
                 Mazzetto mazzetto = new Mazzetto(i);
+                preseGiocatori.Add(mazzetto);
                 mazziGiocatori.Add(mazzetto);
-                for (int x = 0; x < nCarteDefaultGiocatore; x++)
-                {
-                    Carta carta = new Carta(x + 1, i);
-                    mazziGiocatori[i - 1].deck.Add(carta);
-                }
+
+                for (int x = 0; x < nCarteDefaultGiocatore; x++) PescaDaMazzo(i);
             }
         }
 
@@ -50,6 +51,11 @@ namespace Scopa
         public int LunghezzaDeckGiocatore(int nGiocatore)
         {
             return mazziGiocatori[nGiocatore].deck.Count;
+        }
+
+        public void PescaDaMazzo(int nGiocatore)
+        {
+            mazziGiocatori[nGiocatore].deck.Add(mazzoPrincipale.PescaCarta());
         }
         #endregion
 
@@ -74,5 +80,41 @@ namespace Scopa
             return banco.deck.Count;
         }
         #endregion
+
+        public int NumeroGiocatori { get { return NumeroGiocatori; } set { NumeroGiocatori = value; } }
+
+        public int DimMazzoPrincipale { get { return mazzoPrincipale.DimMazzo(); } }
+
+        public void AzzeraGiocatori()
+        {
+            mazziGiocatori.Clear();
+            preseGiocatori.Clear();
+            mazzoPrincipale.InizializzaMazzo();
+            for (int i = 0; i < nGiocatori; i++)
+            {
+                Mazzetto mazzetto = new Mazzetto(i);
+                mazziGiocatori.Add(mazzetto);
+                preseGiocatori.Add(mazzetto);
+
+                for (int x = 0; x < nCarteDefaultGiocatore; x++) PescaDaMazzo(i);
+            }
+        }
+
+        public int CalcolaPunteggio(int nGiocatore)
+        {
+            //Calcolo punteggio del giocatore nGiocatore
+            return 0;
+        }
+
+        public void TerminaPartita()
+        {
+            PunteggioRound punti = new PunteggioRound();
+            punti.pGiocatore0 = CalcolaPunteggio(0);
+            punti.pGiocatore1 = CalcolaPunteggio(1);
+            punteggi.Add(punti);
+
+            AzzeraGiocatori();
+            mazzoPrincipale.InizializzaMazzo();
+        }
     }
 }

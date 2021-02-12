@@ -8,7 +8,7 @@ namespace Scopa
 {
     public partial class Mazzo
     {
-        const int dimMazzo = 40;
+        private const int dimMazzo = 40;
         private int pos = 0;
         private Carta[] mazzo = new Carta[dimMazzo];
 
@@ -43,6 +43,20 @@ namespace Scopa
             //Funzione che restituisce la carta nella posizione attuale e aumenta l'indice
             if (pos == dimMazzo) pos = 0;
             return mazzo[pos++];
+        }
+
+        public Carta PescaCarta()
+        {
+            return mazzo[pos++];
+        }
+
+        public int DimMazzo() { return dimMazzo - pos; }
+
+        public void InizializzaMazzo()
+        {
+            pos = 0;
+            RiempiMazzo();
+            MescolaMazzo();
         }
     }
 }
