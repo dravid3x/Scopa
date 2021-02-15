@@ -3,18 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace Scopa
 {
     public partial class Partita
     {
         private struct PunteggioRound { public int pGiocatore0; public int pGiocatore1; }
-        private const int nCarteDefaultGiocatore = 3;
+        private const int nCarteDefaultGiocatore = 3, nCarteMaxTavolo = 9, defaultXOffset = 190;
         private List<PunteggioRound> punteggi = new List<PunteggioRound>();
         private List<Mazzetto> mazziGiocatori = new List<Mazzetto>();
         private List<Mazzetto> preseGiocatori = new List<Mazzetto>();
         private Mazzetto banco = new Mazzetto(0);
         private Mazzo mazzoPrincipale = new Mazzo();
+        private Point[] posizioniTavolo = new Point[nCarteMaxTavolo];
         private int nGiocatori;
 
         public Partita(int numGiocatori)
@@ -30,6 +32,8 @@ namespace Scopa
 
                 for (int x = 0; x < nCarteDefaultGiocatore; x++) PescaDaMazzo(i);
             }
+
+            GeneraPosizioniTavolo(nCarteMaxTavolo);
         }
 
         #region Giocatore
@@ -85,7 +89,7 @@ namespace Scopa
 
         public int DimMazzoPrincipale { get { return mazzoPrincipale.DimMazzo(); } }
 
-        public void AzzeraGiocatori()
+        private void AzzeraGiocatori()
         {
             mazziGiocatori.Clear();
             preseGiocatori.Clear();
@@ -100,7 +104,7 @@ namespace Scopa
             }
         }
 
-        public int CalcolaPunteggio(int nGiocatore)
+        private int CalcolaPunteggio(int nGiocatore)
         {
             //Calcolo punteggio del giocatore nGiocatore
             return 0;
@@ -112,9 +116,42 @@ namespace Scopa
             punti.pGiocatore0 = CalcolaPunteggio(0);
             punti.pGiocatore1 = CalcolaPunteggio(1);
             punteggi.Add(punti);
-
-            AzzeraGiocatori();
             mazzoPrincipale.InizializzaMazzo();
+            AzzeraGiocatori();
+        }
+
+        private void GeneraPosizioniTavolo(int nMaxPosizioni)
+        {
+            int nPosizioni = 0, posPosizioni = nMaxPosizioni / 2, larghezza = mazzoPrincipale.carta.Larghezza, altezza = mazzoPrincipale.carta.Altezza, offSet = defaultXOffset, incrementoOffset = 2;
+            bool incrementaOffSet = false;
+            while (nPosizioni < nMaxPosizioni)
+            {
+                if (nPosizioni % 2 == 0 && nPosizioni != 0)
+                {
+                    posizioniTavolo[nPosizioni++] = new Point(((Form1.ActiveForm.ClientRectangle.Width / 2) - (larghezza / 2)) + offSet, (Form1.ActiveForm.ClientRectangle.Height / 2) - (altezza / 2));
+                }
+                else
+                {
+                    posizioniTavolo[nPosizioni++] = new Point(((Form1.ActiveForm.ClientRectangle.Width / 2) + (larghezza / 2)) + offSet, (Form1.ActiveForm.ClientRectangle.Height / 2) - (altezza / 2));
+                    incrementaOffSet = true;
+                }
+                if (incrementaOffSet)
+                {
+                    offSet = defaultXOffset * incrementoOffset++;
+                    incrementaOffSet = false;
+                }
+            }
+            for (int i = 0; i < nMaxPosizioni; i++) Console.WriteLine("X=" + posizioniTavolo[i].X + " Y=" + posizioniTavolo[i].Y);
+            //for(int i = 0; i < nMaxPosizioni; i++)
+            //{
+            //    Carta carta = new Carta(1, 2);
+            //    carta.Location = posizioniTavolo[i];
+            //    Form1.ActiveForm.Controls.Add(carta);
+            //}
+
+            Carta carta = new Carta(1, 2);
+            carta.Location = posizioniTavolo[i];
+            Form1.ActiveForm.Controls.Add(carta);
         }
     }
 }

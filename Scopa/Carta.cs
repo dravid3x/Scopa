@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace Scopa
 {
@@ -11,12 +12,18 @@ namespace Scopa
         //private int posInVet, nImmagine;
         //private bool coperta = true, clickable = true;
         //private string nomeCopertina = "Back", posImmaginiDefault = "../../Img/", estensione = ".png";
+        private const int larghezza = 135, altezza = 170;
         private int nCarta = 0, nSeme = 0;          //Cuori = 1, Quadri = 2, Fiori = 3, Picche = 4
 
         public Carta(int nCartaP, int nSemeP/*int xP, int yP, int larghezza, int altezza, int nImmagine, int posInVet*/)
         {
             nCarta = nCartaP;
             nSeme = nSemeP;
+
+            BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            Size = new System.Drawing.Size(larghezza, altezza);
+            BackColor = Color.FromArgb(0,0,0);
 
             #region Vecchio
             //this.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;            //Imposto il bordo incavato
@@ -60,5 +67,7 @@ namespace Scopa
         }*/
         public int NCarta { get { return nCarta; } set { nCarta = value; } }
         public int NSeme { get { return nSeme; } set { nSeme = value; } }
+        public int Larghezza { get { return larghezza; } }
+        public int Altezza { get { return altezza; } }
     }
 }
