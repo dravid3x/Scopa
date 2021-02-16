@@ -125,6 +125,7 @@ namespace Scopa
             int nPosizioni = 0, posPosizioni = nMaxPosizioni / 2, larghezza = mazzoPrincipale.carta.Larghezza, altezza = mazzoPrincipale.carta.Altezza, offSet = defaultXOffset, incrementoOffset = 1;
             posizioniTavolo[nPosizioni++] = new Point((Form1.ActiveForm.ClientRectangle.Width / 2) - (larghezza / 2), (Form1.ActiveForm.ClientRectangle.Height / 2) - (altezza / 2));
             bool secondoPosizionamento = false;
+            //Generazione delle posizioni alterne, centro, destra, sinistra ecc.
             while (nPosizioni < nMaxPosizioni)
             {
                 if (nPosizioni % 2 == 0)
@@ -150,11 +151,6 @@ namespace Scopa
                 //Console.WriteLine("x: " + carta.Location.X + " Y: " + carta.Location.Y);
                 Form1.ActiveForm.Controls.Add(carta);
             }
-
-            //Carta carta = new Carta(1, 2);
-            //carta.Location = primaPosizione;
-            ////Console.WriteLine("Spawnata " + posizioniTavolo[2].X + " - " + posizioniTavolo[0].Y);
-            //Form1.ActiveForm.Controls.Add(carta);
         }
     }
 }
