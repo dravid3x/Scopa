@@ -18,25 +18,38 @@ namespace Scopa
         private Mazzetto banco = new Mazzetto(0);
         private Mazzo mazzoPrincipale = new Mazzo();
         private Point[] posizioniTavolo = new Point[nCarteMaxTavolo];
-        private int nGiocatori = 0, posBanco = 0;
+        private Point posizioneMazzo = new Point(0,0);
+        private int nGiocatori = 0, posBanco = 0, maxPunti = 21, posGiocatore0 = 0, posGiocatore1 = 0;
+        private bool iniziaComputer = false;
 
         public Partita(int numGiocatori)
         {
             //Funzioni per la inizializzazione di una partita, come la generazione del mazzo principale, pescaggio delle carte verso i mazzi del giocatore e generazione delle posizioni disponibili nel tavolo
             mazzoPrincipale.RiempiMazzo();
             mazzoPrincipale.MescolaMazzo();
+            GeneraPosizioniTavolo(nCarteMaxTavolo);
+            GeneraPosizioniGiocatori();
+            //Posizionamento nel campo
+            for (int i = 0; i < mazzoPrincipale.DimMazzo(); i++) mazzoPrincipale.ImpostaPosizioneCarta(i, posizioneMazzo);
+            mazzoPrincipale.PosizionaCarte();
             nGiocatori = numGiocatori;
             for (int i = 0; i < nGiocatori; i++)
             {
                 Mazzetto mazzetto = new Mazzetto(i);
                 preseGiocatori.Add(mazzetto);
                 mazziGiocatori.Add(mazzetto);
-
-                for (int x = 0; x < nCarteDefaultGiocatore; x++) PescaDaMazzo(i);   //Pesco dal mazzo per ogni giocatore (in questo caso per il computer e per il giocatore
             }
-
-            GeneraPosizioniTavolo(nCarteMaxTavolo);
-            GeneraPosizioniGiocatori();
+            //Pesco dal mazzo per ogni giocatore (in questo caso per il computer e per il giocatore. iniziaComputer gestisce chi inizia
+            if (iniziaComputer)
+            {
+                for (int x = 0; x < nCarteDefaultGiocatore; x++) PescaDaMazzo(0);
+                for (int x = 0; x < nCarteDefaultGiocatore; x++) PescaDaMazzo(1);
+            }
+            else
+            {
+                for (int x = 0; x < nCarteDefaultGiocatore; x++) PescaDaMazzo(1);
+                for (int x = 0; x < nCarteDefaultGiocatore; x++) PescaDaMazzo(0);
+            }
         }
 
         #region Giocatore
@@ -44,6 +57,7 @@ namespace Scopa
         public void AggiungiCartaGiocatore(int nGiocatore, Carta carta)
         {
             mazziGiocatori[nGiocatore].deck.Add(carta);
+
         }
 
         public void RimuoviCartaGiocatore(int nGiocatore, Carta carta)
@@ -63,7 +77,9 @@ namespace Scopa
 
         public void PescaDaMazzo(int nGiocatore)
         {
+            //Funzione che cambia la posizione delle carte per darle ai giocatori dopo aver pescato la carta
             mazziGiocatori[nGiocatore].deck.Add(mazzoPrincipale.PescaCarta());
+            mazziGiocatori[nGiocatore].deck[mazziGiocatori[nGiocatore].deck.Count - 1].Location = (nGiocatore == 0) ? posizioniGiocatori[nGiocatore][posGiocatore0++] : posizioniGiocatori[nGiocatore][posGiocatore1++];
         }
         #endregion
 
@@ -151,14 +167,14 @@ namespace Scopa
                 }
             }
             //for (int i = 0; i < nMaxPosizioni; i++) Console.WriteLine("X=" + posizioniTavolo[i].X + " Y=" + posizioniTavolo[i].Y);
-            for (int i = 0; i < nMaxPosizioni; i++)
-            {
-                //Posizionamento all'interno del Form1
-                Carta carta = new Carta(1, 2);
-                carta.Location = posizioniTavolo[i];
-                //Console.WriteLine("x: " + carta.Location.X + " Y: " + carta.Location.Y);
-                Form1.ActiveForm.Controls.Add(carta);
-            }
+            //for (int i = 0; i < nMaxPosizioni; i++)
+            //{
+            //    //Posizionamento all'interno del Form1
+            //    Carta carta = new Carta(1, 2);
+            //    carta.Location = posizioniTavolo[i];
+            //    //Console.WriteLine("x: " + carta.Location.X + " Y: " + carta.Location.Y);
+            //    Form1.ActiveForm.Controls.Add(carta);
+            //}
         }
 
         private void GeneraPosizioniGiocatori()
@@ -176,15 +192,17 @@ namespace Scopa
             posizioniGiocatore2[2] = new Point(posizioniTavolo[nCartaRiferimento].X - defaultXOffset, posizioniTavolo[nCartaRiferimento].Y - defaultXOffset * 2);
             posizioniGiocatori.Add(posizioniGiocatore2);
 
-            for (int i = 0; i < posizioniGiocatori.Count; i++)
-            {
-                for (int x = 0; x < nCarteDefaultGiocatore; x++)
-                {
-                    Carta temp = new Carta(1, 2);
-                    temp.Location = posizioniGiocatori[i][x];
-                    Form1.ActiveForm.Controls.Add(temp);
-                }
-            }
+            //for (int i = 0; i < posizioniGiocatori.Count; i++)
+            //{
+            //    for (int x = 0; x < nCarteDefaultGiocatore; x++)
+            //    {
+            //        Carta temp = new Carta(1, 2);
+            //        temp.Location = posizioniGiocatori[i][x];
+            //        Form1.ActiveForm.Controls.Add(temp);
+            //    }
+            //}
         }
+
+        public int MaxPunti { get { return maxPunti; } set { if(value >= 1) maxPunti = value; } }
     }
 }

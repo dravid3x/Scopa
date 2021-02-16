@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace Scopa
 {
@@ -57,6 +58,20 @@ namespace Scopa
             pos = 0;
             RiempiMazzo();
             MescolaMazzo();
+        }
+
+        public void ImpostaPosizioneCarta(int nCarta, Point posizione)
+        {
+            mazzo[nCarta].Location = posizione;
+        }
+
+        public void PosizionaCarte()
+        {
+            int dim = dimMazzo - pos;
+            for(int i = 0; i < dim; i++)
+            {
+                Form1.ActiveForm.Controls.Add(mazzo[i]);
+            }
         }
     }
 }
