@@ -122,36 +122,39 @@ namespace Scopa
 
         private void GeneraPosizioniTavolo(int nMaxPosizioni)
         {
-            int nPosizioni = 0, posPosizioni = nMaxPosizioni / 2, larghezza = mazzoPrincipale.carta.Larghezza, altezza = mazzoPrincipale.carta.Altezza, offSet = defaultXOffset, incrementoOffset = 2;
-            bool incrementaOffSet = false;
+            int nPosizioni = 0, posPosizioni = nMaxPosizioni / 2, larghezza = mazzoPrincipale.carta.Larghezza, altezza = mazzoPrincipale.carta.Altezza, offSet = defaultXOffset, incrementoOffset = 1;
+            posizioniTavolo[nPosizioni++] = new Point((Form1.ActiveForm.ClientRectangle.Width / 2) - (larghezza / 2), (Form1.ActiveForm.ClientRectangle.Height / 2) - (altezza / 2));
+            bool secondoPosizionamento = false;
             while (nPosizioni < nMaxPosizioni)
             {
-                if (nPosizioni % 2 == 0 && nPosizioni != 0)
+                if (nPosizioni % 2 == 0)
                 {
-                    posizioniTavolo[nPosizioni++] = new Point(((Form1.ActiveForm.ClientRectangle.Width / 2) - (larghezza / 2)) + offSet, (Form1.ActiveForm.ClientRectangle.Height / 2) - (altezza / 2));
+                    posizioniTavolo[nPosizioni++] = new Point(posizioniTavolo[0].X - (offSet * incrementoOffset), posizioniTavolo[0].Y);
+                    secondoPosizionamento = true;
                 }
                 else
                 {
-                    posizioniTavolo[nPosizioni++] = new Point(((Form1.ActiveForm.ClientRectangle.Width / 2) + (larghezza / 2)) + offSet, (Form1.ActiveForm.ClientRectangle.Height / 2) - (altezza / 2));
-                    incrementaOffSet = true;
-                }
-                if (incrementaOffSet)
-                {
-                    offSet = defaultXOffset * incrementoOffset++;
-                    incrementaOffSet = false;
+                    if (secondoPosizionamento)
+                    {
+                        secondoPosizionamento = false;
+                        incrementoOffset++;
+                    }
+                    posizioniTavolo[nPosizioni++] = new Point(posizioniTavolo[0].X + (offSet * incrementoOffset), posizioniTavolo[0].Y);
                 }
             }
             for (int i = 0; i < nMaxPosizioni; i++) Console.WriteLine("X=" + posizioniTavolo[i].X + " Y=" + posizioniTavolo[i].Y);
-            //for(int i = 0; i < nMaxPosizioni; i++)
-            //{
-            //    Carta carta = new Carta(1, 2);
-            //    carta.Location = posizioniTavolo[i];
-            //    Form1.ActiveForm.Controls.Add(carta);
-            //}
+            for (int i = 0; i < nMaxPosizioni; i++)
+            {
+                Carta carta = new Carta(1, 2);
+                carta.Location = posizioniTavolo[i];
+                //Console.WriteLine("x: " + carta.Location.X + " Y: " + carta.Location.Y);
+                Form1.ActiveForm.Controls.Add(carta);
+            }
 
-            Carta carta = new Carta(1, 2);
-            carta.Location = posizioniTavolo[i];
-            Form1.ActiveForm.Controls.Add(carta);
+            //Carta carta = new Carta(1, 2);
+            //carta.Location = primaPosizione;
+            ////Console.WriteLine("Spawnata " + posizioniTavolo[2].X + " - " + posizioniTavolo[0].Y);
+            //Form1.ActiveForm.Controls.Add(carta);
         }
     }
 }
