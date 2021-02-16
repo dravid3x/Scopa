@@ -11,8 +11,8 @@ namespace Scopa
     {
         //private int posInVet, nImmagine;
         //private bool coperta = true, clickable = true;
-        //private string nomeCopertina = "Back", posImmaginiDefault = "../../Img/", estensione = ".png";
-        private const int larghezza = 135, altezza = 170;
+        private string nomeCopertina = "Back", posImmaginiDefault = "../../Img/", estensione = ".png";
+        private const int larghezza = 128, altezza = 184;
         private int nCarta = 0, nSeme = 0;          //Cuori = 1, Quadri = 2, Fiori = 3, Picche = 4
 
         public Carta(int nCartaP, int nSemeP/*int xP, int yP, int larghezza, int altezza, int nImmagine, int posInVet*/)
@@ -20,17 +20,13 @@ namespace Scopa
             nCarta = nCartaP;
             nSeme = nSemeP;
 
-            BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;             //Imposto il bordo incavato
+            SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;    //Imposto lo stretch dell'immagine
+            ImageLocation = posImmaginiDefault + nomeCopertina + estensione;    //Imposto l'immagine come retro carta
             Size = new System.Drawing.Size(larghezza, altezza);
-            BackColor = Color.FromArgb(0,0,0);
+            //BackColor = Color.FromArgb(0,0,0);
 
             #region Vecchio
-            //this.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;            //Imposto il bordo incavato
-            //this.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;   //Imposto lo stretch dell'immagine
-            //this.ImageLocation = posImmaginiDefault + nomeCopertina + estensione;                                      //Imposto l'immagine come retro carta
-            //this.Location = new System.Drawing.Point(xP, yP);                       //Imposto la posizione nel form della PictreBox
-            //this.Size = new System.Drawing.Size(larghezza, altezza);                //Imposto le dimensioni
             //this.Tag = nImmagine;                                                   //Inserisco nel tag il numero identificativo dell'immagine
             //this.posInVet = posInVet;                                               //Inserisco la posizione nel vettore nella sua variabile
             //this.nImmagine = nImmagine;

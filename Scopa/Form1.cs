@@ -19,7 +19,7 @@ namespace Scopa
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            this.BackgroundImage = new Bitmap("../../imgs/GreenTable.jpg");
+            this.BackgroundImage = new Bitmap("../../Img/GreenTable.jpg");
             Partita partitella = new Partita(2);
 
         }

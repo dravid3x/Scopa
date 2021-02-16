@@ -10,7 +10,7 @@ namespace Scopa
     public partial class Partita
     {
         private struct PunteggioRound { public int pGiocatore0; public int pGiocatore1; }
-        private const int nCarteDefaultGiocatore = 3, nCarteMaxTavolo = 9, defaultXOffset = 190, nCartaRiferimento = 0;
+        private const int nCarteDefaultGiocatore = 3, nCarteMaxTavolo = 9, defaultXOffset = 190, nCartaRiferimento = 0, nCarteInizialiTavolo = 4;
         private List<PunteggioRound> punteggi = new List<PunteggioRound>();
         private List<Mazzetto> mazziGiocatori = new List<Mazzetto>();
         private List<Mazzetto> preseGiocatori = new List<Mazzetto>();
@@ -18,7 +18,7 @@ namespace Scopa
         private Mazzetto banco = new Mazzetto(0);
         private Mazzo mazzoPrincipale = new Mazzo();
         private Point[] posizioniTavolo = new Point[nCarteMaxTavolo];
-        private Point posizioneMazzo = new Point(0,0);
+        private Point posizioneMazzo = new Point(0, 0);
         private int nGiocatori = 0, posBanco = 0, maxPunti = 21, posGiocatore0 = 0, posGiocatore1 = 0;
         private bool iniziaComputer = false;
 
@@ -50,6 +50,8 @@ namespace Scopa
                 for (int x = 0; x < nCarteDefaultGiocatore; x++) PescaDaMazzo(1);
                 for (int x = 0; x < nCarteDefaultGiocatore; x++) PescaDaMazzo(0);
             }
+            //Posiziona carte tavolo
+            for (int i = 0; i < nCarteInizialiTavolo; i++) PescaDaMazzoBanco();
         }
 
         #region Giocatore
@@ -63,6 +65,8 @@ namespace Scopa
         public void RimuoviCartaGiocatore(int nGiocatore, Carta carta)
         {
             mazziGiocatori[nGiocatore].deck.Remove(carta);
+            if (nGiocatore == 0) posGiocatore0--;
+            else posGiocatore1--;
         }
 
         public Carta LeggiCartaGiocatore(int nGiocatore, int nCarta)
@@ -85,9 +89,11 @@ namespace Scopa
 
         #region Banco
         //Funzioni principali del banco/tavolo come aggiunta di una carta, rimozione di una carta, restituzione di una carta in posizione nCarta e restituzione dell numero di carte
-        public void AggiungiCartaBanco(Carta carta)
+        public void PescaDaMazzoBanco()
         {
-            banco.deck.Add(carta);
+            banco.deck.Add(mazzoPrincipale.PescaCarta());
+            banco.deck[posBanco].Location = posizioniTavolo[posBanco];
+            posBanco++;
         }
 
         public void RimuoviCartaBanco(Carta carta)
@@ -203,6 +209,6 @@ namespace Scopa
             //}
         }
 
-        public int MaxPunti { get { return maxPunti; } set { if(value >= 1) maxPunti = value; } }
+        public int MaxPunti { get { return maxPunti; } set { if (value >= 1) maxPunti = value; } }
     }
 }
