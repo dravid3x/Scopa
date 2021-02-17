@@ -13,7 +13,7 @@ namespace Scopa
         //private bool coperta = true, clickable = true;
         private string nomeCopertina = "Back", posImmaginiDefault = "../../Img/", estensione = ".png";
         private const int larghezza = 128, altezza = 184;
-        private int nCarta = 0, nSeme = 0;          //Cuori = 1, Quadri = 2, Fiori = 3, Picche = 4
+        private int nCarta = 0, nSeme = 0;          //Cuori = 0, Quadri = 1, Fiori = 2, Picche = 3
 
         public Carta(int nCartaP, int nSemeP/*int xP, int yP, int larghezza, int altezza, int nImmagine, int posInVet*/)
         {
@@ -22,7 +22,8 @@ namespace Scopa
 
             BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;             //Imposto il bordo incavato
             SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;    //Imposto lo stretch dell'immagine
-            ImageLocation = posImmaginiDefault + nomeCopertina + estensione;    //Imposto l'immagine come retro carta
+            //ImageLocation = posImmaginiDefault + nomeCopertina + estensione;    //Imposto l'immagine come retro carta
+            ImageLocation = posImmaginiDefault + nCarta + "-" + nSeme + estensione;
             Size = new System.Drawing.Size(larghezza, altezza);
             //BackColor = Color.FromArgb(0,0,0);
 

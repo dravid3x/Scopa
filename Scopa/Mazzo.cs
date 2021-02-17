@@ -17,7 +17,7 @@ namespace Scopa
         public void RiempiMazzo()
         {
             int pos = 0;
-            for(int x = 1; x <= 4; x++)
+            for(int x = 0; x < 4; x++)
             {
                 for (int i = 1; i <= 10; i++)
                 {
