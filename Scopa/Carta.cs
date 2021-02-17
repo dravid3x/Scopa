@@ -10,7 +10,7 @@ namespace Scopa
     public partial class Carta : System.Windows.Forms.PictureBox
     {
         //private int posInVet, nImmagine;
-        //private bool coperta = true, clickable = true;
+        private bool coperta = true;/*, clickable = true*/
         private string nomeCopertina = "Back", posImmaginiDefault = "../../Img/", estensione = ".png";
         private const int larghezza = 128, altezza = 184;
         private int nCarta = 0, nSeme = 0;          //Cuori = 0, Quadri = 1, Fiori = 2, Picche = 3
@@ -22,8 +22,8 @@ namespace Scopa
 
             BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;             //Imposto il bordo incavato
             SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;    //Imposto lo stretch dell'immagine
-            //ImageLocation = posImmaginiDefault + nomeCopertina + estensione;    //Imposto l'immagine come retro carta
-            ImageLocation = posImmaginiDefault + nCarta + "-" + nSeme + estensione;
+            ImageLocation = posImmaginiDefault + nomeCopertina + estensione;    //Imposto l'immagine come retro carta
+            //ImageLocation = posImmaginiDefault + nCarta + "-" + nSeme + estensione;
             Size = new System.Drawing.Size(larghezza, altezza);
             //BackColor = Color.FromArgb(0,0,0);
 
@@ -34,12 +34,12 @@ namespace Scopa
             #endregion
         }
 
-        /*public void Gira()
+        public void Gira()
         {
             //Funzione per "girare" la tessera cambiando la ImageLocation
-            this.ImageLocation = coperta ? posImmaginiDefault + nImmagine + estensione : posImmaginiDefault + nomeCopertina + estensione;
+            ImageLocation = coperta ? ImageLocation = posImmaginiDefault + nCarta + "-" + nSeme + estensione : posImmaginiDefault + nomeCopertina + estensione;
             coperta = !coperta;
-        }*/
+        }
         //public int PosInVet { get { return posInVet; } }
         //public bool Cliccabile { get { return clickable; } set { clickable = value; } }
         /*public int NImmagine
@@ -66,5 +66,6 @@ namespace Scopa
         public int NSeme { get { return nSeme; } set { nSeme = value; } }
         public int Larghezza { get { return larghezza; } }
         public int Altezza { get { return altezza; } }
+        public bool Coperta { get { return coperta; } }
     }
 }

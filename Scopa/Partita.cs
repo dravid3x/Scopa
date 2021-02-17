@@ -10,7 +10,7 @@ namespace Scopa
     public partial class Partita
     {
         private struct PunteggioRound { public int pGiocatore0; public int pGiocatore1; }
-        private const int nCarteDefaultGiocatore = 3, nCarteMaxTavolo = 9, defaultXOffset = 190, nCartaRiferimento = 0, nCarteInizialiTavolo = 4;
+        private const int nCarteDefaultGiocatore = 3, nCarteMaxTavolo = 9, defaultXOffset = 190, nCartaRiferimento = 0, nCarteInizialiTavolo = 9;
         private List<PunteggioRound> punteggi = new List<PunteggioRound>();
         private List<Mazzetto> mazziGiocatori = new List<Mazzetto>();
         private List<Mazzetto> preseGiocatori = new List<Mazzetto>();
@@ -18,7 +18,7 @@ namespace Scopa
         private Mazzetto banco = new Mazzetto(0);
         private Mazzo mazzoPrincipale = new Mazzo();
         private Point[] posizioniTavolo = new Point[nCarteMaxTavolo];
-        private Point posizioneMazzo = new Point(0, 0);
+        private Point posizioneMazzo = new Point(defaultXOffset + defaultXOffset / 2, defaultXOffset / 2 - defaultXOffset / 4);
         private int nGiocatori = 0, posBanco = 0, maxPunti = 21, posGiocatore0 = 0, posGiocatore1 = 0;
         private bool iniziaComputer = false;
 
@@ -56,11 +56,12 @@ namespace Scopa
 
         #region Giocatore
         //Funzioni principali del giocatore come aggiunta di una carta, rimozione di una carta, restituzione di una carta in posizione nCarta con nGiocatore e restituzione dell numero di carte, pescaggio di una carta dal mazzo
-        public void AggiungiCartaGiocatore(int nGiocatore, Carta carta)
-        {
-            mazziGiocatori[nGiocatore].deck.Add(carta);
+        
+        //public void AggiungiCartaGiocatore(int nGiocatore, Carta carta)
+        //{
+        //    mazziGiocatori[nGiocatore].deck.Add(carta);
 
-        }
+        //}
 
         public void RimuoviCartaGiocatore(int nGiocatore, Carta carta)
         {
@@ -83,7 +84,15 @@ namespace Scopa
         {
             //Funzione che cambia la posizione delle carte per darle ai giocatori dopo aver pescato la carta
             mazziGiocatori[nGiocatore].deck.Add(mazzoPrincipale.PescaCarta());
-            mazziGiocatori[nGiocatore].deck[mazziGiocatori[nGiocatore].deck.Count - 1].Location = (nGiocatore == 0) ? posizioniGiocatori[nGiocatore][posGiocatore0++] : posizioniGiocatori[nGiocatore][posGiocatore1++];
+            if(nGiocatore == 0)
+            {
+                mazziGiocatori[nGiocatore].deck[mazziGiocatori[nGiocatore].deck.Count - 1].Location = posizioniGiocatori[nGiocatore][posGiocatore0++];
+                mazziGiocatori[nGiocatore].deck[mazziGiocatori[nGiocatore].deck.Count - 1].Gira();
+            }
+            else
+            {
+                mazziGiocatori[nGiocatore].deck[mazziGiocatori[nGiocatore].deck.Count - 1].Location = posizioniGiocatori[nGiocatore][posGiocatore1++];
+            }
         }
         #endregion
 
@@ -93,6 +102,7 @@ namespace Scopa
         {
             banco.deck.Add(mazzoPrincipale.PescaCarta());
             banco.deck[posBanco].Location = posizioniTavolo[posBanco];
+            banco.deck[posBanco].Gira();
             posBanco++;
         }
 
