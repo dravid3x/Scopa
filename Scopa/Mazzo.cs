@@ -12,7 +12,8 @@ namespace Scopa
         private const int dimMazzo = 40;
         private int pos = 0;
         private Carta[] mazzo = new Carta[dimMazzo];
-
+        private bool SelezionataGiocatore = false;
+        private Carta cartaSelezionata = new Carta(0, 0);
 
         public void RiempiMazzo()
         {
@@ -21,7 +22,8 @@ namespace Scopa
             {
                 for (int i = 1; i <= 10; i++)
                 {
-                    mazzo[pos++] = new Carta(i, x);
+                    mazzo[pos] = new Carta(i, x);
+                    mazzo[pos++].Click += new EventHandler(ClickCarta);
                 }
             }
         }
@@ -73,5 +75,22 @@ namespace Scopa
                 Form1.ActiveForm.Controls.Add(mazzo[i]);
             }
         }
+
+        private void ClickCarta(object sender, EventArgs e)
+        {
+            //Per ora abilito la selezione solo sulle carte del giocatore con controllo manuale
+            if (!SelezionataGiocatore && ((Carta)sender).NGiocatore == 1)
+            {
+                ((Carta)sender).Location = new Point(((Carta)sender).Location.X, ((Carta)sender).Location.Y - 30);
+                cartaSelezionata = ((Carta)sender);
+                SelezionataGiocatore = true;
+            }
+            else if (((Carta)sender).NGiocatore == -1)
+            {
+                ((Carta)sender).Location = new Point(((Carta)sender).Location.X, ((Carta)sender).Location.Y - 30);
+            }
+        }
+
+        public Carta CartaSelezionata { get { return cartaSelezionata; } }
     }
 }

@@ -10,7 +10,7 @@ namespace Scopa
     public partial class Partita
     {
         private struct PunteggioRound { public int pGiocatore0; public int pGiocatore1; }
-        private const int nCarteDefaultGiocatore = 3, nCarteMaxTavolo = 9, defaultXOffset = 190, nCartaRiferimento = 0, nCarteInizialiTavolo = 9;
+        private const int nCarteDefaultGiocatore = 3, nCarteMaxTavolo = 9, defaultXOffset = 190, nCartaRiferimento = 0, nCarteInizialiTavolo = 4;
         private List<PunteggioRound> punteggi = new List<PunteggioRound>();
         private List<Mazzetto> mazziGiocatori = new List<Mazzetto>();
         private List<Mazzetto> preseGiocatori = new List<Mazzetto>();
@@ -25,8 +25,7 @@ namespace Scopa
         public Partita(int numGiocatori)
         {
             //Funzioni per la inizializzazione di una partita, come la generazione del mazzo principale, pescaggio delle carte verso i mazzi del giocatore e generazione delle posizioni disponibili nel tavolo
-            mazzoPrincipale.RiempiMazzo();
-            mazzoPrincipale.MescolaMazzo();
+            mazzoPrincipale.InizializzaMazzo();
             GeneraPosizioniTavolo(nCarteMaxTavolo);
             GeneraPosizioniGiocatori();
             //Posizionamento nel campo
@@ -84,14 +83,16 @@ namespace Scopa
         {
             //Funzione che cambia la posizione delle carte per darle ai giocatori dopo aver pescato la carta
             mazziGiocatori[nGiocatore].deck.Add(mazzoPrincipale.PescaCarta());
-            if(nGiocatore == 0)
+            int tempPos = mazziGiocatori[nGiocatore].deck.Count - 1;
+            mazziGiocatori[nGiocatore].deck[tempPos].NGiocatore = nGiocatore;
+            if (nGiocatore == 0)
             {
-                mazziGiocatori[nGiocatore].deck[mazziGiocatori[nGiocatore].deck.Count - 1].Location = posizioniGiocatori[nGiocatore][posGiocatore0++];
-                mazziGiocatori[nGiocatore].deck[mazziGiocatori[nGiocatore].deck.Count - 1].Gira();
+                mazziGiocatori[nGiocatore].deck[tempPos].Location = posizioniGiocatori[nGiocatore][posGiocatore0++];
             }
             else
             {
-                mazziGiocatori[nGiocatore].deck[mazziGiocatori[nGiocatore].deck.Count - 1].Location = posizioniGiocatori[nGiocatore][posGiocatore1++];
+                mazziGiocatori[nGiocatore].deck[tempPos].Location = posizioniGiocatori[nGiocatore][posGiocatore1++];
+                mazziGiocatori[nGiocatore].deck[tempPos].Gira();
             }
         }
         #endregion
@@ -102,6 +103,7 @@ namespace Scopa
         {
             banco.deck.Add(mazzoPrincipale.PescaCarta());
             banco.deck[posBanco].Location = posizioniTavolo[posBanco];
+            banco.deck[posBanco].NGiocatore = -1;
             banco.deck[posBanco].Gira();
             posBanco++;
         }
@@ -197,15 +199,15 @@ namespace Scopa
         {
             //Gestisco in maniera basica le posizioni delle carte in maniera basica non generalizzata come per il banco/tavolo per non esagerare e risparmiare tempo
             Point[] posizioniGiocatore = new Point[nCarteDefaultGiocatore];
-            posizioniGiocatore[0] = new Point(posizioniTavolo[nCartaRiferimento].X, posizioniTavolo[nCartaRiferimento].Y + defaultXOffset * 2);
-            posizioniGiocatore[1] = new Point(posizioniTavolo[nCartaRiferimento].X + defaultXOffset, posizioniTavolo[nCartaRiferimento].Y + defaultXOffset * 2);
-            posizioniGiocatore[2] = new Point(posizioniTavolo[nCartaRiferimento].X - defaultXOffset, posizioniTavolo[nCartaRiferimento].Y + defaultXOffset * 2);
+            posizioniGiocatore[0] = new Point(posizioniTavolo[nCartaRiferimento].X, posizioniTavolo[nCartaRiferimento].Y - defaultXOffset * 2);
+            posizioniGiocatore[1] = new Point(posizioniTavolo[nCartaRiferimento].X + defaultXOffset, posizioniTavolo[nCartaRiferimento].Y - defaultXOffset * 2);
+            posizioniGiocatore[2] = new Point(posizioniTavolo[nCartaRiferimento].X - defaultXOffset, posizioniTavolo[nCartaRiferimento].Y - defaultXOffset * 2);
             posizioniGiocatori.Add(posizioniGiocatore);
 
             Point[] posizioniGiocatore2 = new Point[nCarteDefaultGiocatore];
-            posizioniGiocatore2[0] = new Point(posizioniTavolo[nCartaRiferimento].X, posizioniTavolo[nCartaRiferimento].Y - defaultXOffset * 2);
-            posizioniGiocatore2[1] = new Point(posizioniTavolo[nCartaRiferimento].X + defaultXOffset, posizioniTavolo[nCartaRiferimento].Y - defaultXOffset * 2);
-            posizioniGiocatore2[2] = new Point(posizioniTavolo[nCartaRiferimento].X - defaultXOffset, posizioniTavolo[nCartaRiferimento].Y - defaultXOffset * 2);
+            posizioniGiocatore2[0] = new Point(posizioniTavolo[nCartaRiferimento].X, posizioniTavolo[nCartaRiferimento].Y + defaultXOffset * 2);
+            posizioniGiocatore2[1] = new Point(posizioniTavolo[nCartaRiferimento].X + defaultXOffset, posizioniTavolo[nCartaRiferimento].Y + defaultXOffset * 2);
+            posizioniGiocatore2[2] = new Point(posizioniTavolo[nCartaRiferimento].X - defaultXOffset, posizioniTavolo[nCartaRiferimento].Y + defaultXOffset * 2);
             posizioniGiocatori.Add(posizioniGiocatore2);
 
             //for (int i = 0; i < posizioniGiocatori.Count; i++)
@@ -220,5 +222,6 @@ namespace Scopa
         }
 
         public int MaxPunti { get { return maxPunti; } set { if (value >= 1) maxPunti = value; } }
+
     }
 }

@@ -18,6 +18,6 @@ namespace Scopa
             nGiocatore = numGiocatore;
         }
 
-        public int NGiocatore { get { return nGiocatore;} set { nGiocatore = value; } }
+        //public int NGiocatore { get { return nGiocatore;} set { nGiocatore = value; } }
     }
 }
