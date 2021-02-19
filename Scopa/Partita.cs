@@ -18,9 +18,19 @@ namespace Scopa
         private Mazzetto banco = new Mazzetto(0);
         private Mazzo mazzoPrincipale = new Mazzo();
         private Point[] posizioniTavolo = new Point[nCarteMaxTavolo];
-        private Point posizioneMazzo = new Point(defaultXOffset + defaultXOffset / 2, defaultXOffset / 2 - defaultXOffset / 4);
+        private Point posizioneMazzo = new Point(defaultXOffset, defaultXOffset / 2 - defaultXOffset / 4);
+        private Point posizioneMazzettoComputer = new Point(defaultXOffset * 4, defaultXOffset / 2 - defaultXOffset / 4);
+        private Point posizioneMazzettoGiocatore = new Point(defaultXOffset * 4, defaultXOffset / 2 + defaultXOffset / 4);
         private int nGiocatori = 0, posBanco = 0, maxPunti = 21, posGiocatore0 = 0, posGiocatore1 = 0;
         private bool iniziaComputer = false;
+
+        private Carta cartaVuota = new Carta(0, 0);
+        private Carta cartaSelezionata = new Carta(0, 0);
+        private List<Carta> carteSelezionate = new List<Carta>();
+        private int sommaCarteScelte = 0;
+        private bool assoSelezionato = false;
+
+
 
         public Partita(int numGiocatori)
         {
@@ -55,7 +65,7 @@ namespace Scopa
 
         #region Giocatore
         //Funzioni principali del giocatore come aggiunta di una carta, rimozione di una carta, restituzione di una carta in posizione nCarta con nGiocatore e restituzione dell numero di carte, pescaggio di una carta dal mazzo
-        
+
         //public void AggiungiCartaGiocatore(int nGiocatore, Carta carta)
         //{
         //    mazziGiocatori[nGiocatore].deck.Add(carta);
@@ -84,6 +94,7 @@ namespace Scopa
             //Funzione che cambia la posizione delle carte per darle ai giocatori dopo aver pescato la carta
             mazziGiocatori[nGiocatore].deck.Add(mazzoPrincipale.PescaCarta());
             int tempPos = mazziGiocatori[nGiocatore].deck.Count - 1;
+            mazziGiocatori[nGiocatore].deck[tempPos].Click += new EventHandler(ClickCarta);
             mazziGiocatori[nGiocatore].deck[tempPos].NGiocatore = nGiocatore;
             if (nGiocatore == 0)
             {
@@ -95,6 +106,7 @@ namespace Scopa
                 mazziGiocatori[nGiocatore].deck[tempPos].Gira();
             }
         }
+
         #endregion
 
         #region Banco
@@ -102,6 +114,7 @@ namespace Scopa
         public void PescaDaMazzoBanco()
         {
             banco.deck.Add(mazzoPrincipale.PescaCarta());
+            banco.deck[posBanco].Click += new EventHandler(ClickCarta);
             banco.deck[posBanco].Location = posizioniTavolo[posBanco];
             banco.deck[posBanco].NGiocatore = -1;
             banco.deck[posBanco].Gira();
@@ -123,6 +136,13 @@ namespace Scopa
             return banco.deck.Count;
         }
         #endregion
+
+        public void SpostaInMazzetto(Carta carta)
+        {
+            preseGiocatori[carta.NGiocatore].deck.Add(carta);
+            carta.Gira();
+            carta.Location = (carta.NGiocatore == 0) ? posizioneMazzettoComputer : posizioneMazzettoGiocatore;
+        }
 
         public int NumeroGiocatori { get { return NumeroGiocatori; } set { NumeroGiocatori = value; } }
 
@@ -219,6 +239,82 @@ namespace Scopa
             //        Form1.ActiveForm.Controls.Add(temp);
             //    }
             //}
+        }
+
+
+        private void ClickCarta(object sender, EventArgs e)
+        {
+            //Per ora abilito la selezione solo sulle carte del giocatore
+            if (((Carta)sender).NGiocatore == 1 && cartaSelezionata != ((Carta)sender))
+            {
+                if (cartaSelezionata == cartaVuota)
+                {
+                    ((Carta)sender).Location = new Point(((Carta)sender).Location.X, ((Carta)sender).Location.Y - 30);
+                    cartaSelezionata = ((Carta)sender);
+                }
+                else
+                {
+                    cartaSelezionata.Location = new Point(cartaSelezionata.Location.X, cartaSelezionata.Location.Y + 30);
+                    ((Carta)sender).Location = new Point(((Carta)sender).Location.X, ((Carta)sender).Location.Y - 30);
+                    cartaSelezionata = ((Carta)sender);
+                }
+                if(((Carta)sender).NCarta == 1) assoSelezionato = true;
+            }
+            //Selezionata carta del banco
+            else if (((Carta)sender).NGiocatore == -1 && cartaSelezionata.NCarta != cartaVuota.NCarta)
+            {
+                if (((Carta)sender).SelezionataBanco)
+                {
+                    ((Carta)sender).Location = new Point(((Carta)sender).Location.X, ((Carta)sender).Location.Y + 30);
+                    carteSelezionate.Remove(((Carta)sender));
+                    sommaCarteScelte -= ((Carta)sender).NCarta;
+                    ((Carta)sender).SelezionataBanco = false;
+                }
+                //Funzione Asso piglia Tutto
+                else if (assoSelezionato)
+                {
+                    cartaSelezionata.Enabled = false;
+                    SpostaInMazzetto(cartaSelezionata);
+                    cartaSelezionata = new Carta(0, 0);
+                    for (int i = 0; i < banco.deck.Count; i++)
+                    {
+                        carteSelezionate.Add(banco.deck[i]);
+                        carteSelezionate[carteSelezionate.Count - 1].NGiocatore = 1;
+                        carteSelezionate[i].SelezionataBanco = true;
+                        carteSelezionate[i].Enabled = false;
+                        SpostaInMazzetto(carteSelezionate[i]);
+                    }
+                    carteSelezionate.Clear();
+                    sommaCarteScelte = 0;
+                    assoSelezionato = false;
+                }
+                else if ((((Carta)sender).NCarta + sommaCarteScelte <= cartaSelezionata.NCarta))
+                {
+                    ((Carta)sender).Location = new Point(((Carta)sender).Location.X, ((Carta)sender).Location.Y - 30);
+                    ((Carta)sender).SelezionataBanco = true;
+                    carteSelezionate.Add(((Carta)sender));
+                    sommaCarteScelte += ((Carta)sender).NCarta;
+                }
+                //Rimozione delle carte
+                if (sommaCarteScelte == cartaSelezionata.NCarta)
+                {
+                    cartaSelezionata.Enabled = false;
+                    SpostaInMazzetto(cartaSelezionata);
+                    cartaSelezionata = new Carta(0, 0);
+                    for (int i = 0; i < carteSelezionate.Count; i++)
+                    {
+                        carteSelezionate[i].NGiocatore = 1;
+                        carteSelezionate[i].Enabled = false;
+                        SpostaInMazzetto(carteSelezionate[i]);
+                    }
+                    carteSelezionate.Clear();
+                    sommaCarteScelte = 0;
+                }
+            }
+            else if(((Carta)sender).NGiocatore == 0)
+            {
+                //Chiamata da parte del computer
+            }
         }
 
         public int MaxPunti { get { return maxPunti; } set { if (value >= 1) maxPunti = value; } }

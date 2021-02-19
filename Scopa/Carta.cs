@@ -15,6 +15,7 @@ namespace Scopa
         private const int larghezza = 128, altezza = 184;
         //Cuori = 0, Quadri = 1, Fiori = 2, Picche = 3
         private int nCarta = 0, nSeme = 0, nGiocatore = 0;
+        private bool selezionataBanco = false;
 
         public Carta(int nCartaP, int nSemeP/*int xP, int yP, int larghezza, int altezza, int nImmagine, int posInVet*/)
         {
@@ -69,6 +70,7 @@ namespace Scopa
         public int Altezza { get { return altezza; } }
         public bool Coperta { get { return coperta; } }
         public bool Selezionata { get { return selezionata; } set { selezionata = value; } }
-        public int NGiocatore { get { return nGiocatore; } set { if (value >= 0) nGiocatore = value; } }
+        public int NGiocatore { get { return nGiocatore; } set { nGiocatore = value; } }
+        public bool SelezionataBanco { get { return selezionataBanco; } set { selezionataBanco = value; } }
     }
 }
