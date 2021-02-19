@@ -10,7 +10,8 @@ namespace Scopa
     public partial class Partita
     {
         private struct PunteggioRound { public int pGiocatore0; public int pGiocatore1; }
-        private const int nCarteDefaultGiocatore = 3, nCarteMaxTavolo = 9, defaultXOffset = 190, nCartaRiferimento = 0, nCarteInizialiTavolo = 4;
+        private const int nCarteDefaultGiocatore = 3, nCarteMaxTavolo = 9, defaultXOffset = 190, nCartaRiferimento = 0, nCarteInizialiTavolo = 4, offSetSelezione = 30;
+        private int larghezzaForm = Form1.ActiveForm.ClientRectangle.Width, altezzaForm = Form1.ActiveForm.ClientRectangle.Height;
         private List<PunteggioRound> punteggi = new List<PunteggioRound>();
         private List<Mazzetto> mazziGiocatori = new List<Mazzetto>();
         private List<Mazzetto> preseGiocatori = new List<Mazzetto>();
@@ -20,7 +21,7 @@ namespace Scopa
         private Point[] posizioniTavolo = new Point[nCarteMaxTavolo];
         private Point posizioneMazzo = new Point(defaultXOffset, defaultXOffset / 2 - defaultXOffset / 4);
         private Point posizioneMazzettoComputer = new Point(defaultXOffset * 4, defaultXOffset / 2 - defaultXOffset / 4);
-        private Point posizioneMazzettoGiocatore = new Point(defaultXOffset * 4, defaultXOffset / 2 + defaultXOffset / 4);
+        private Point posizioneMazzettoGiocatore = new Point(defaultXOffset * 2, defaultXOffset * 4 + defaultXOffset / 4);
         private int nGiocatori = 0, posBanco = 0, maxPunti = 21, posGiocatore0 = 0, posGiocatore1 = 0;
         private bool iniziaComputer = false;
 
@@ -184,7 +185,7 @@ namespace Scopa
         private void GeneraPosizioniTavolo(int nMaxPosizioni)
         {
             int nPosizioni = 0, posPosizioni = nMaxPosizioni / 2, larghezza = mazzoPrincipale.carta.Larghezza, altezza = mazzoPrincipale.carta.Altezza, offSet = defaultXOffset, incrementoOffset = 1;
-            posizioniTavolo[nPosizioni++] = new Point((Form1.ActiveForm.ClientRectangle.Width / 2) - (larghezza / 2), (Form1.ActiveForm.ClientRectangle.Height / 2) - (altezza / 2));
+            posizioniTavolo[nPosizioni++] = new Point((larghezzaForm / 2) - (larghezza / 2), (altezzaForm / 2) - (altezza / 2));
             bool secondoPosizionamento = false;
             //Generazione delle posizioni alterne, centro, destra, sinistra ecc.
             while (nPosizioni < nMaxPosizioni)
@@ -241,7 +242,6 @@ namespace Scopa
             //}
         }
 
-
         private void ClickCarta(object sender, EventArgs e)
         {
             //Per ora abilito la selezione solo sulle carte del giocatore
@@ -249,23 +249,34 @@ namespace Scopa
             {
                 if (cartaSelezionata == cartaVuota)
                 {
-                    ((Carta)sender).Location = new Point(((Carta)sender).Location.X, ((Carta)sender).Location.Y - 30);
+                    ((Carta)sender).Location = new Point(((Carta)sender).Location.X, ((Carta)sender).Location.Y - offSetSelezione);
                     cartaSelezionata = ((Carta)sender);
+                    cartaSelezionata.SelezionataBanco = true;
                 }
                 else
                 {
-                    cartaSelezionata.Location = new Point(cartaSelezionata.Location.X, cartaSelezionata.Location.Y + 30);
-                    ((Carta)sender).Location = new Point(((Carta)sender).Location.X, ((Carta)sender).Location.Y - 30);
+                    for (int i = 0; i < carteSelezionate.Count; i++)
+                    {
+                        if (carteSelezionate[i].SelezionataBanco)
+                        {
+                            carteSelezionate[i].SelezionataBanco = false;
+                            carteSelezionate[i].Location = new Point(carteSelezionate[i].Location.X, carteSelezionate[i].Location.Y + offSetSelezione);
+                        }
+                    }
+                    sommaCarteScelte = 0;
+                    cartaSelezionata.Location = new Point(cartaSelezionata.Location.X, cartaSelezionata.Location.Y + offSetSelezione);
+                    ((Carta)sender).Location = new Point(((Carta)sender).Location.X, ((Carta)sender).Location.Y - offSetSelezione);
                     cartaSelezionata = ((Carta)sender);
+                    cartaSelezionata.SelezionataBanco = true;
                 }
-                if(((Carta)sender).NCarta == 1) assoSelezionato = true;
+                if (((Carta)sender).NCarta == 1) assoSelezionato = true;
             }
             //Selezionata carta del banco
             else if (((Carta)sender).NGiocatore == -1 && cartaSelezionata.NCarta != cartaVuota.NCarta)
             {
                 if (((Carta)sender).SelezionataBanco)
                 {
-                    ((Carta)sender).Location = new Point(((Carta)sender).Location.X, ((Carta)sender).Location.Y + 30);
+                    ((Carta)sender).Location = new Point(((Carta)sender).Location.X, ((Carta)sender).Location.Y + offSetSelezione);
                     carteSelezionate.Remove(((Carta)sender));
                     sommaCarteScelte -= ((Carta)sender).NCarta;
                     ((Carta)sender).SelezionataBanco = false;
@@ -290,7 +301,7 @@ namespace Scopa
                 }
                 else if ((((Carta)sender).NCarta + sommaCarteScelte <= cartaSelezionata.NCarta))
                 {
-                    ((Carta)sender).Location = new Point(((Carta)sender).Location.X, ((Carta)sender).Location.Y - 30);
+                    ((Carta)sender).Location = new Point(((Carta)sender).Location.X, ((Carta)sender).Location.Y - offSetSelezione);
                     ((Carta)sender).SelezionataBanco = true;
                     carteSelezionate.Add(((Carta)sender));
                     sommaCarteScelte += ((Carta)sender).NCarta;
@@ -311,7 +322,7 @@ namespace Scopa
                     sommaCarteScelte = 0;
                 }
             }
-            else if(((Carta)sender).NGiocatore == 0)
+            else if (((Carta)sender).NGiocatore == 0)
             {
                 //Chiamata da parte del computer
             }
