@@ -20,18 +20,17 @@ namespace Scopa
         private Mazzo mazzoPrincipale = new Mazzo();
         private Point[] posizioniTavolo = new Point[nCarteMaxTavolo];
         private Point posizioneMazzo = new Point(defaultXOffset, defaultXOffset / 2 - defaultXOffset / 4);
-        private Point posizioneMazzettoComputer = new Point(defaultXOffset * 4, defaultXOffset / 2 - defaultXOffset / 4);
+        private Point posizioneMazzettoComputer = new Point(defaultXOffset * 2, defaultXOffset / 2 - defaultXOffset / 4);
         private Point posizioneMazzettoGiocatore = new Point(defaultXOffset * 2, defaultXOffset * 4 + defaultXOffset / 4);
         private int nGiocatori = 0, posBanco = 0, maxPunti = 21, posGiocatore0 = 0, posGiocatore1 = 0;
         private bool iniziaComputer = false;
 
+        //Variabili per funzione click delle carte
         private Carta cartaVuota = new Carta(0, 0);
         private Carta cartaSelezionata = new Carta(0, 0);
         private List<Carta> carteSelezionate = new List<Carta>();
         private int sommaCarteScelte = 0;
         private bool assoSelezionato = false;
-
-
 
         public Partita(int numGiocatori)
         {
@@ -47,6 +46,7 @@ namespace Scopa
             {
                 Mazzetto mazzetto = new Mazzetto(i);
                 preseGiocatori.Add(mazzetto);
+                mazzetto = new Mazzetto(i);
                 mazziGiocatori.Add(mazzetto);
             }
             //Pesco dal mazzo per ogni giocatore (in questo caso per il computer e per il giocatore. iniziaComputer gestisce chi inizia
@@ -62,6 +62,8 @@ namespace Scopa
             }
             //Posiziona carte tavolo
             for (int i = 0; i < nCarteInizialiTavolo; i++) PescaDaMazzoBanco();
+
+
         }
 
         #region Giocatore
@@ -141,6 +143,8 @@ namespace Scopa
         public void SpostaInMazzetto(Carta carta)
         {
             preseGiocatori[carta.NGiocatore].deck.Add(carta);
+            if (carta == cartaSelezionata) mazziGiocatori[carta.NGiocatore].deck.Remove(carta);
+            else banco.deck.Remove(carta);
             carta.Gira();
             carta.Location = (carta.NGiocatore == 0) ? posizioneMazzettoComputer : posizioneMazzettoGiocatore;
         }
