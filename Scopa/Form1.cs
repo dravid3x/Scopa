@@ -15,13 +15,17 @@ namespace Scopa
         public Form1()
         {
             InitializeComponent();
+            this.BackgroundImage = new Bitmap("../../Img/GreenTable.jpg");
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            this.BackgroundImage = new Bitmap("../../Img/GreenTable.jpg");
-            Partita partitella = new Partita(2);
+            Partita partitella = new Partita(2, this);
+        }
 
+        private void Form1_Click(object sender, EventArgs e)
+        {
+            
         }
     }
 }

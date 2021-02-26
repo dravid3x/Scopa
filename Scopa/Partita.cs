@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace Scopa
 {
@@ -11,7 +12,7 @@ namespace Scopa
     {
         private struct PunteggioRound { public int pGiocatore0; public int pGiocatore1; }
         private const int nCarteDefaultGiocatore = 3, nCarteMaxTavolo = 9, defaultXOffset = 190, nCartaRiferimento = 0, nCarteInizialiTavolo = 1, offSetSelezione = 30, offSetScopa = 15;
-        private int larghezzaForm = Form1.ActiveForm.ClientRectangle.Width, altezzaForm = Form1.ActiveForm.ClientRectangle.Height;
+        private int larghezzaForm = 0, altezzaForm = 0;
         private List<PunteggioRound> punteggi = new List<PunteggioRound>();
         private List<Mazzetto> mazziGiocatori = new List<Mazzetto>();
         private List<Mazzetto> preseGiocatori = new List<Mazzetto>();
@@ -22,7 +23,7 @@ namespace Scopa
         private Point posizioneMazzo = new Point(defaultXOffset, defaultXOffset / 2 - defaultXOffset / 4);
         private Point posizioneMazzettoComputer = new Point(defaultXOffset * 2, defaultXOffset / 2 - defaultXOffset / 4);
         private Point posizioneMazzettoGiocatore = new Point(defaultXOffset * 2, defaultXOffset * 4 + defaultXOffset / 4);
-        private int nGiocatori = 0, posBanco = 0, maxPunti = 21, posGiocatore0 = 0, posGiocatore1 = 0,  nScopaGiocatore = 0, nScopaComputer = 0, maxScopa = 5;
+        private int nGiocatori = 0, maxPunti = 21, nScopaGiocatore = 0, nScopaComputer = 0, maxScopa = 5;
         private bool iniziaComputer = false, turnoGiocatore = true, scopa = false;
 
         //Variabili per funzione click delle carte
@@ -32,9 +33,11 @@ namespace Scopa
         private int sommaCarteScelte = 0;
         private bool assoSelezionato = false;
 
-        public Partita(int numGiocatori)
+        public Partita(int numGiocatori, Form1 form)
         {
             //Funzioni per la inizializzazione di una partita, come la generazione del mazzo principale, pescaggio delle carte verso i mazzi del giocatore e generazione delle posizioni disponibili nel tavolo
+            larghezzaForm = form.ClientRectangle.Width;
+            altezzaForm = form.ClientRectangle.Height;
             mazzoPrincipale.InizializzaMazzo();
             GeneraPosizioniTavolo(nCarteMaxTavolo);
             GeneraPosizioniGiocatori();
@@ -75,13 +78,6 @@ namespace Scopa
 
         //}
 
-        public void RimuoviCartaGiocatore(int nGiocatore, Carta carta)
-        {
-            mazziGiocatori[nGiocatore].deck.Remove(carta);
-            if (nGiocatore == 0) posGiocatore0--;
-            else posGiocatore1--;
-        }
-
         public Carta LeggiCartaGiocatore(int nGiocatore, int nCarta)
         {
             return mazziGiocatori[nGiocatore].deck[nCarta];
@@ -99,15 +95,9 @@ namespace Scopa
             int tempPos = mazziGiocatori[nGiocatore].deck.Count - 1;
             mazziGiocatori[nGiocatore].deck[tempPos].Click += new EventHandler(ClickCarta);
             mazziGiocatori[nGiocatore].deck[tempPos].NGiocatore = nGiocatore;
-            if (nGiocatore == 0)
-            {
-                mazziGiocatori[nGiocatore].deck[tempPos].Location = posizioniGiocatori[nGiocatore][posGiocatore0++];
-            }
-            else
-            {
-                mazziGiocatori[nGiocatore].deck[tempPos].Location = posizioniGiocatori[nGiocatore][posGiocatore1++];
-                mazziGiocatori[nGiocatore].deck[tempPos].Gira();
-            }
+
+            mazziGiocatori[nGiocatore].deck[tempPos].Location = posizioniGiocatori[nGiocatore][mazziGiocatori[nGiocatore].deck.Count - 1];
+            if (nGiocatore == 1) mazziGiocatori[nGiocatore].deck[tempPos].Gira();
         }
 
         #endregion
@@ -117,6 +107,7 @@ namespace Scopa
         public void PescaDaMazzoBanco()
         {
             banco.deck.Add(mazzoPrincipale.PescaCarta());
+            int posBanco = banco.deck.Count - 1;
             banco.deck[posBanco].Click += new EventHandler(ClickCarta);
             banco.deck[posBanco].Location = posizioniTavolo[posBanco];
             banco.deck[posBanco].NGiocatore = -1;
@@ -145,7 +136,7 @@ namespace Scopa
             preseGiocatori[carta.NGiocatore].deck.Add(carta);
             if (carta == cartaSelezionata) mazziGiocatori[carta.NGiocatore].deck.Remove(carta);
             else banco.deck.Remove(carta);
-            if(!scopa) carta.Gira();
+            if (!scopa) carta.Gira();
             carta.Location = (carta.NGiocatore == 0) ? (scopa) ? new Point(posizioneMazzettoComputer.X, posizioneMazzettoComputer.Y + (offSetScopa * (++nScopaComputer - maxScopa))) : posizioneMazzettoComputer : (scopa) ? new Point(posizioneMazzettoGiocatore.X, posizioneMazzettoGiocatore.Y - (-offSetScopa * (++nScopaGiocatore - maxScopa))) : posizioneMazzettoGiocatore;
         }
 
@@ -316,7 +307,7 @@ namespace Scopa
                 //Rimozione delle carte
                 if (sommaCarteScelte == cartaSelezionata.NCarta)
                 {
-                    
+
                     for (int i = 0; i < carteSelezionate.Count; i++)
                     {
                         carteSelezionate[i].NGiocatore = 1;
@@ -353,6 +344,11 @@ namespace Scopa
         }
 
         public int MaxPunti { get { return maxPunti; } set { if (value >= 1) maxPunti = value; } }
+
+        public void ClickForm1()
+        {
+            //MessageBox.Show("ALBANIA");
+        }
 
     }
 }
