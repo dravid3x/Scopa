@@ -174,7 +174,7 @@ namespace Scopa
         private void SpostaInMazzetto(Carta carta)
         {
             preseGiocatori[carta.NGiocatore].deck.Add(carta);
-            if (carta == cartaSelezionata) mazziGiocatori[carta.NGiocatore].deck.Remove(carta);
+            if (carta == cartaSelezionata || carta.NGiocatore == 0) mazziGiocatori[carta.NGiocatore].deck.Remove(carta);
             else RimuoviCartaBanco(carta);
             if (!scopa && carta.NGiocatore == 1) carta.Gira();
             carta.Location = (carta.NGiocatore == 0) ? (scopa) ? new Point(posizioneMazzettoComputer.X, posizioneMazzettoComputer.Y + (offSetScopa * (++nScopaComputer - maxScopa))) : posizioneMazzettoComputer : (scopa) ? new Point(posizioneMazzettoGiocatore.X, posizioneMazzettoGiocatore.Y - (-offSetScopa * (++nScopaGiocatore - maxScopa))) : posizioneMazzettoGiocatore;
@@ -363,7 +363,7 @@ namespace Scopa
             {
                 
                 SpostaInMazzetto(((Carta)sender));
-                turnoGiocatore = !turnoGiocatore;
+                turnoGiocatore = true;
             }
 
 
