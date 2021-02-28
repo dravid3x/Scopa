@@ -25,7 +25,7 @@ namespace Scopa
         private Point posizioneMazzettoComputer = new Point(defaultXOffset * 2, defaultXOffset / 2 - defaultXOffset / 4);
         private Point posizioneMazzettoGiocatore = new Point(defaultXOffset * 2, defaultXOffset * 4 + defaultXOffset / 4);
         private int nGiocatori = 0, maxPunti = 21, nScopaGiocatore = 0, nScopaComputer = 0, maxScopa = 5;
-        private bool iniziaComputer = false, turnoGiocatore = true, scopa = false;
+        private bool turnoGiocatore = true, scopa = false;
 
         //Variabili per funzione click delle carte
         private Carta cartaVuota = new Carta(0, 0);
@@ -52,7 +52,7 @@ namespace Scopa
                 mazziGiocatori.Add(mazzetto);
             }
             //Pesco dal mazzo per ogni giocatore (in questo caso per il computer e per il giocatore. iniziaComputer gestisce chi inizia
-            if (iniziaComputer)
+            if (!turnoGiocatore)
             {
                 for (int x = 0; x < nCarteDefaultGiocatore; x++) PescaDaMazzo(0);
                 for (int x = 0; x < nCarteDefaultGiocatore; x++) PescaDaMazzo(1);
@@ -168,7 +168,6 @@ namespace Scopa
         //    return banco.deck.Count;
         //}
 
-
         #endregion
 
         private void SpostaInMazzetto(Carta carta)
@@ -216,6 +215,8 @@ namespace Scopa
             punti.pGiocatore1 = CalcolaPunteggio(1);
             punteggi.Add(punti);
             mazzoPrincipale.InizializzaMazzo();
+            nScopaComputer = 0;
+            nScopaGiocatore = 0;
             AzzeraGiocatori();
         }
 
@@ -371,6 +372,7 @@ namespace Scopa
 
         private void AbbassaTuttoBanco()
         {
+            //Funzione che abbassa tutte le eventuali carte selezionate
             for (int i = 0; i < carteSelezionate.Count; i++)
             {
                 if (carteSelezionate[i].SelezionataBanco)
@@ -384,6 +386,7 @@ namespace Scopa
 
         private void GiocataComputer()
         {
+            //Funzione che esegue il click da parte del computer su una determinata carta
             ClickCarta(mazziGiocatori[0].deck[mazziGiocatori[0].deck.Count - 1], EventArgs.Empty);
         }
 
