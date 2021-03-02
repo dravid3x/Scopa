@@ -65,9 +65,7 @@ namespace Scopa
             //Posiziona carte tavolo
             for (int i = 0; i < nCarteInizialiTavolo; i++) PescaDaMazzoBanco();
 
-            ClickCarta(mazziGiocatori[0].deck[0], EventArgs.Empty);
-
-
+            //ClickCarta(mazziGiocatori[0].deck[0], EventArgs.Empty);
         }
 
         #region Giocatore
@@ -362,12 +360,20 @@ namespace Scopa
             }
             else
             {
-                
                 SpostaInMazzetto(((Carta)sender));
                 turnoGiocatore = true;
             }
-
-
+            //Controllo se le carte di tutti i giocatori sono finite
+            bool finite = true;
+            for(int i = 0; i < mazziGiocatori.Count; i++)
+            {
+                if (mazziGiocatori[i].deck.Count != 0) finite = false;
+            }
+            if(finite) //Se le carte sono finite nelle mani dei giocatori sono finite ridò le carte
+            {
+                for (int i = 0; i < nCarteDefaultGiocatore; i++) PescaDaMazzo(0);
+                for (int i = 0; i < nCarteDefaultGiocatore; i++) PescaDaMazzo(1);
+            }
         }
 
         private void AbbassaTuttoBanco()
