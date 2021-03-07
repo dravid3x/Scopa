@@ -34,6 +34,8 @@ namespace Scopa
         private int sommaCarteScelte = 0;
         private bool assoSelezionato = false;
 
+        Random random = new Random();   //Variabile per numeri casuali
+
         public Partita(int numGiocatori)
         {
             //Funzioni per la inizializzazione di una partita, come la generazione del mazzo principale, pescaggio delle carte verso i mazzi del giocatore e generazione delle posizioni disponibili nel tavolo
@@ -45,13 +47,13 @@ namespace Scopa
             mazzoPrincipale.PosizionaCarte();
             nGiocatori = numGiocatori;
             for (int i = 0; i < nGiocatori; i++)
-            {
+            {   //Inizializzo i mazzetti dei 2 giocatori, per poi inserisci all'interno le carte
                 Mazzetto mazzetto = new Mazzetto(i);
                 preseGiocatori.Add(mazzetto);
                 mazzetto = new Mazzetto(i);
                 mazziGiocatori.Add(mazzetto);
             }
-            //Pesco dal mazzo per ogni giocatore (in questo caso per il computer e per il giocatore. iniziaComputer gestisce chi inizia
+            //Pesco dal mazzo le carte e le inserisco nel mazzo di ogni giocatore. iniziaComputer gestisce chi inizia
             if (!turnoGiocatore)
             {
                 for (int x = 0; x < nCarteDefaultGiocatore; x++) PescaDaMazzo(0);
@@ -62,7 +64,7 @@ namespace Scopa
                 for (int x = 0; x < nCarteDefaultGiocatore; x++) PescaDaMazzo(1);
                 for (int x = 0; x < nCarteDefaultGiocatore; x++) PescaDaMazzo(0);
             }
-            //Posiziona carte tavolo
+            //Posiziona le carte iniziali nel tavolo
             for (int i = 0; i < nCarteInizialiTavolo; i++) PescaDaMazzoBanco();
 
             //ClickCarta(mazziGiocatori[0].deck[0], EventArgs.Empty);
@@ -79,17 +81,19 @@ namespace Scopa
 
         public Carta LeggiCartaGiocatore(int nGiocatore, int nCarta)
         {
+            //Funzione non utilizzata
             return mazziGiocatori[nGiocatore].deck[nCarta];
         }
 
         public int LunghezzaDeckGiocatore(int nGiocatore)
         {
+            //Funzione per la restitiuzione della lungezza del deck di un giocatore
             return mazziGiocatori[nGiocatore].deck.Count;
         }
 
         public void PescaDaMazzo(int nGiocatore)
         {
-            //Funzione che cambia la posizione delle carte per darle ai giocatori dopo aver pescato la carta
+            //Funzione che pesca dal mazzo una carta e la da al giocatore nGiocatore, spostandone anche la posizione
             mazziGiocatori[nGiocatore].deck.Add(mazzoPrincipale.PescaCarta());
             int tempPos = mazziGiocatori[nGiocatore].deck.Count - 1;
             mazziGiocatori[nGiocatore].deck[tempPos].Click += new EventHandler(ClickCarta);
@@ -97,6 +101,7 @@ namespace Scopa
 
             mazziGiocatori[nGiocatore].deck[tempPos].Location = posizioniGiocatori[nGiocatore][mazziGiocatori[nGiocatore].deck.Count - 1];
             if (nGiocatore == 1) mazziGiocatori[nGiocatore].deck[tempPos].Gira();
+            if (nGiocatore == 0) mazziGiocatori[nGiocatore].deck[tempPos].Gira();   //Riga per le carte scoperte del computer
         }
 
         #endregion
@@ -105,12 +110,13 @@ namespace Scopa
         //Funzioni principali del banco/tavolo come aggiunta di una carta, rimozione di una carta, restituzione di una carta in posizione nCarta e restituzione dell numero di carte
         public void PescaDaMazzoBanco()
         {
+            //Funzione che pesca dal mazzo una carta e la inserisce nel banco/tavolo. Aggiunge inoltre il controllo che la carta è premibile
             banco.deck.Add(mazzoPrincipale.PescaCarta());
             int posBanco = banco.deck.Count - 1;
             banco.deck[posBanco].Click += new EventHandler(ClickCarta);
             int posLibera = PosizioneLiberaBanco();
             banco.deck[posBanco].Location = posizioniTavolo[posLibera].posizione;
-            posizioniTavolo[posLibera].utilizzata = true;
+            //posizioniTavolo[posLibera].utilizzata = true;
             posizioniTavolo[posBanco].utilizzata = true;
             banco.deck[posBanco].NGiocatore = -1;
             banco.deck[posBanco].Gira();
@@ -118,9 +124,9 @@ namespace Scopa
 
         private int PosizioneLiberaBanco()
         {
-            //Ricerco la prima posizione disponibile nel tavolo
+            //Ricerco la prima posizione disponibile nel tavolo e la restituisco
             bool trovato = false; int i = 0;
-            while(!trovato && i < nCarteMaxTavolo)
+            while (!trovato && i < nCarteMaxTavolo)
             {
                 if (!posizioniTavolo[i].utilizzata) return i;
                 else i++;
@@ -130,12 +136,14 @@ namespace Scopa
 
         private void RimuoviCartaBanco(Carta carta)
         {
+            //Funzione che rimuove la carta passata dal banco
             banco.deck.Remove(carta);
             RiabilitaPosizioneBanco(carta);
         }
 
         private void RiabilitaPosizioneBanco(Carta carta)
         {
+            //Funzione che data una carta la "abbassa"
             bool trovato = false; int i = 0;
             while (!trovato && i < nCarteMaxTavolo)
             {
@@ -150,6 +158,7 @@ namespace Scopa
 
         private void AggiuntiCartaBanco(Carta carta)
         {
+            //Funzione che aggiunge la carta passata al banco
             int posLibera = PosizioneLiberaBanco();
             carta.Location = posizioniTavolo[posLibera].posizione;
             posizioniTavolo[posLibera].utilizzata = true;
@@ -170,8 +179,9 @@ namespace Scopa
 
         private void SpostaInMazzetto(Carta carta)
         {
+            //Funzione che sposta la carta passata nel suo mazzetto
             preseGiocatori[carta.NGiocatore].deck.Add(carta);
-            if (carta == cartaSelezionata || carta.NGiocatore == 0) mazziGiocatori[carta.NGiocatore].deck.Remove(carta);
+            if (carta == cartaSelezionata/* || carta.NGiocatore == 0*/) mazziGiocatori[carta.NGiocatore].deck.Remove(carta);
             else RimuoviCartaBanco(carta);
             if (!scopa && carta.NGiocatore == 1) carta.Gira();
             carta.Location = (carta.NGiocatore == 0) ? (scopa) ? new Point(posizioneMazzettoComputer.X, posizioneMazzettoComputer.Y + (offSetScopa * (++nScopaComputer - maxScopa))) : posizioneMazzettoComputer : (scopa) ? new Point(posizioneMazzettoGiocatore.X, posizioneMazzettoGiocatore.Y - (-offSetScopa * (++nScopaGiocatore - maxScopa))) : posizioneMazzettoGiocatore;
@@ -223,7 +233,7 @@ namespace Scopa
             int nPosizioni = 0, posPosizioni = nMaxPosizioni / 2, larghezza = mazzoPrincipale.carta.Larghezza, altezza = mazzoPrincipale.carta.Altezza, offSet = defaultXOffset, incrementoOffset = 1;
             posizioniTavolo[nPosizioni++].posizione = new Point((larghezzaForm / 2) - (larghezza / 2), (altezzaForm / 2) - (altezza / 2));
             bool secondoPosizionamento = false;
-            //Generazione delle posizioni alterne, centro, destra, sinistra ecc.
+            //Generazione delle posizioni alterne, centro, destra, sinistra ecc. utilizzando offSet impostato e il numero di volte che è stata eseguita la funzione
             while (nPosizioni < nMaxPosizioni)
             {
                 if (nPosizioni % 2 == 0)
@@ -245,7 +255,7 @@ namespace Scopa
 
         private void GeneraPosizioniGiocatori()
         {
-            //Gestisco in maniera basica le posizioni delle carte in maniera basica non generalizzata come per il banco/tavolo per non esagerare e risparmiare tempo
+            //Genero le posizioni per il banco e per il giocatore
             Point[] posizioniGiocatore = new Point[nCarteDefaultGiocatore];
             posizioniGiocatore[0] = new Point(posizioniTavolo[nCartaRiferimento].posizione.X, posizioniTavolo[nCartaRiferimento].posizione.Y - defaultXOffset * 2);
             posizioniGiocatore[1] = new Point(posizioniTavolo[nCartaRiferimento].posizione.X + defaultXOffset, posizioniTavolo[nCartaRiferimento].posizione.Y - defaultXOffset * 2);
@@ -286,7 +296,7 @@ namespace Scopa
                 //Selezionata carta del banco
                 else if (((Carta)sender).NGiocatore == -1 && cartaSelezionata.NCarta != cartaVuota.NCarta)
                 {
-                    if (((Carta)sender).SelezionataBanco)
+                    if (((Carta)sender).SelezionataBanco)   //Situazione nella quale seleziono una carta già selezionata per deselezionarla
                     {
                         ((Carta)sender).Location = new Point(((Carta)sender).Location.X, ((Carta)sender).Location.Y + offSetSelezione);
                         carteSelezionate.Remove(((Carta)sender));
@@ -358,22 +368,8 @@ namespace Scopa
                 }
                 if (!turnoGiocatore) GiocataComputer();
             }
-            else
-            {
-                SpostaInMazzetto(((Carta)sender));
-                turnoGiocatore = true;
-            }
-            //Controllo se le carte di tutti i giocatori sono finite
-            bool finite = true;
-            for(int i = 0; i < mazziGiocatori.Count; i++)
-            {
-                if (mazziGiocatori[i].deck.Count != 0) finite = false;
-            }
-            if(finite) //Se le carte sono finite nelle mani dei giocatori sono finite ridò le carte
-            {
-                for (int i = 0; i < nCarteDefaultGiocatore; i++) PescaDaMazzo(0);
-                for (int i = 0; i < nCarteDefaultGiocatore; i++) PescaDaMazzo(1);
-            }
+            ControlloFineCarteMani();
+
         }
 
         private void AbbassaTuttoBanco()
@@ -392,8 +388,70 @@ namespace Scopa
 
         private void GiocataComputer()
         {
+            //Controllo se c'è una carta di valore identico a una del computer
+            //Attualmente tengo la coppia con valore maggiore, ovviamente sarebbe cambiabile per un eventuale upgrade dell'intelligenza
+            //Salvo le carte in una nuova variabile, non vengono semplicemente copiati o contenuti ma viene copiato l'inidirizzo, quindi la variabile e l'elemento associato sono "collegati"
+            Carta cartaTrovata = cartaVuota, cartaMano = cartaVuota;
+            for (int k = 0; k < mazziGiocatori[0].deck.Count; k++)
+            {
+                for (int i = 0; i < banco.deck.Count; i++)
+                {
+                    if (banco.deck[i].NCarta == mazziGiocatori[0].deck[k].NCarta)
+                    {
+                        if (cartaTrovata != cartaVuota)      //Controllo se posso confrontare la carta con una già trovata
+                        {
+                            if (mazziGiocatori[0].deck[k].NCarta > cartaTrovata.NCarta)
+                            {
+                                cartaTrovata = banco.deck[i];
+                                cartaMano = mazziGiocatori[0].deck[k];
+                            }
+                        }
+                        else
+                        {
+                            cartaTrovata = banco.deck[i];
+                            cartaMano = mazziGiocatori[0].deck[k];
+                        }
+                    }
+                }
+            }
+            bool trovataSomma = false;
+            if (cartaTrovata != cartaVuota)  //Se ho trovato una coppia allora gioco quella, altrimenti eseguo la ricerca fattoriale di somme
+            {
+                cartaTrovata.NGiocatore = 0;
+                SpostaInMazzetto(cartaTrovata);
+                SpostaInMazzetto(cartaMano);
+            }
+            else
+            {
+                //Ricerca somma carte
+            }
+            if (!trovataSomma && cartaTrovata == cartaVuota)  //Se non trovo nessuna giocata disponibile scelgo una carta a caso e la metto sul banco
+            {
+                Carta tempCarta = mazziGiocatori[0].deck[random.Next(mazziGiocatori[0].deck.Count)];
+                mazziGiocatori[0].deck.Remove(tempCarta);
+                tempCarta.NGiocatore = -1;
+                AggiuntiCartaBanco(tempCarta);
+            }
+            turnoGiocatore = true;
+            ControlloFineCarteMani();
+
             //Funzione che esegue il click da parte del computer su una determinata carta
-            ClickCarta(mazziGiocatori[0].deck[mazziGiocatori[0].deck.Count - 1], EventArgs.Empty);
+            //ClickCarta(mazziGiocatori[0].deck[mazziGiocatori[0].deck.Count - 1], EventArgs.Empty);
+        }
+
+        public void ControlloFineCarteMani()
+        {
+            //Controllo se le carte di tutti i giocatori sono finite
+            bool finite = true;
+            for (int i = 0; i < mazziGiocatori.Count; i++)
+            {
+                if (mazziGiocatori[i].deck.Count != 0) finite = false;
+            }
+            if (finite) //Se le carte sono finite nelle mani dei giocatori sono finite ridò le carte
+            {
+                for (int i = 0; i < nCarteDefaultGiocatore; i++) PescaDaMazzo(0);
+                for (int i = 0; i < nCarteDefaultGiocatore; i++) PescaDaMazzo(1);
+            }
         }
 
         public int MaxPunti { get { return maxPunti; } set { if (value >= 1) maxPunti = value; } }
